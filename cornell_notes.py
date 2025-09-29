@@ -1,52 +1,3 @@
-#!/usr/bin/env python3
-"""
-cornell_recorder.py
-
-Enhanced: Record long meetings (in chunks), transcribe locally using Whisper,
-and generate intelligent summaries (key points, cue questions, action items,
-concise summary) using Google AI Studio (Gemini) free API.
-
-This file is an extension of your earlier script; new features added:
-- Real-time audio recording (unlimited length via chunked files)
-- Local Whisper transcription with chunking for large files, progress bars,
-  model-choice support, and estimated processing time display
-- Gemini integration scaffold using `google-generativeai` (AI Studio) client:
-  - Produces key points, cue questions, action items, concise summary
-  - Chunking transcript to avoid huge requests
-- Resume/partial-work support via a `.state.json` file per job
-- Export to TXT / JSON / Markdown (Cornell)
-- Error handling for API/network/disk conditions
-- CLI configuration and environment variable support
-- Installation instructions and dependency hints below
-- KeyboardInterrupt clean shutdown handling
-- Disk-space checks before recording/transcription
-
-USAGE EXAMPLES:
-    # Basic (uses env GEMINI_API_KEY if available)
-    python cornell_recorder.py --title "Team Sync" --segment-minutes 10 --prefer-whisper
-
-    # Provide Gemini key on CLI:
-    python cornell_recorder.py -t "My Talk" --gemini-api-key "ya29...." --whisper-model small
-
-INSTALLATION (example):
-    # System-level: install ffmpeg
-    # macOS (homebrew): brew install ffmpeg
-    # Ubuntu/Debian: sudo apt install ffmpeg
-    # Windows: install from ffmpeg.org and add to PATH
-
-    pip install sounddevice soundfile numpy tqdm openai-whisper google-generativeai
-
-    Notes:
-      - openai-whisper requires ffmpeg available.
-      - google-generativeai is the Python client for Google Generative AI Studio (may be named differently depending on versions).
-      - If using a GPU for Whisper, follow whisper docs to install CUDA-enabled dependencies.
-
-ENVIRONMENT VARIABLES:
-    GEMINI_API_KEY    - Gemini / Google AI Studio API key (optional; CLI flag overrides)
-    OUTPUT_BASE_DIR   - Default output directory (optional)
-"""
-
-# --- Standard libs ---
 import argparse
 import os
 import sys
@@ -66,20 +17,16 @@ import re
 import pathlib
 from typing import List, Tuple, Dict, Any, Optional
 
-# Try imports for optional libs
 try:
-    import whisper as _whisper_lib  # openai-whisper
+    import whisper as _whisper_lib 
 except Exception:
     _whisper_lib = None
 
 try:
-    import google.generativeai as genai  # google-generativeai client
+    import google.generativeai as genai  
 except Exception:
     genai = None
 
-# ----------------------------
-# Helper utilities
-# ----------------------------
 def human_seconds(seconds: float) -> str:
     seconds = int(round(seconds))
     h = seconds // 3600
@@ -929,5 +876,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\nInterrupted by user. Exiting cleanly.")
         sys.exit(0)
+
 
 
